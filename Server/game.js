@@ -54,10 +54,8 @@ function findInSubGrid(grid, row, col, guess) {
 
 function createGrid(difficulty) {
   let howManyNumbersToRemove = setDifficulty(difficulty);
-  let grid = [];
-  for (let i = 0; i < 9; i++) {
-    grid[i] = Array(9).fill(0);
-  }
+  let grid = getRandomGrid();
+
   solve(grid);
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
@@ -84,8 +82,22 @@ function setDifficulty(difficulty) {
   }
 }
 
+function getRandomGrid() {
+  let grid = [];
+  for (let i = 0; i < 9; i++) {
+    grid[i] = Array(9).fill(0);
+  }
+  for (let i = 0; i < 9; i++) {
+    let number = Math.floor(Math.random() * 9) + 1;
+    while (!isValidPlace(grid, 0, i, number)) {
+      number = Math.floor(Math.random() * 9) + 1;
+    }
+    grid[0][i] = number;
+  }
+  return grid;
+}
+
 let solution = createGrid("Hard");
-console.log(solution);
-// Util.copyGrid(board, solution);
+Util.print2DArray(solution);
 solve(solution);
-console.log(solution);
+Util.print2DArray(solution);
