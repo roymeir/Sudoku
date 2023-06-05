@@ -14,7 +14,7 @@ function getGrid() {
 
 function Sudoku() {
   const [grid, setGrid] = useState(getGrid());
-  const [puzzleStatus, setPuzzleStatus] = useState("Create a puzzle");
+  const [puzzleStatus, setPuzzleStatus] = useState("");
 
   async function handleCreate() {
     try {
@@ -31,11 +31,50 @@ function Sudoku() {
       const response = await REST.solveBoard(grid);
       const data = await response.json();
       if (data.status) {
+        setPuzzleStatus("Solved");
         return data.solution;
+      } else {
+        setPuzzleStatus("unSolvable");
+        return grid;
       }
-      return grid;
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async function handleValidate() {
+    try {
+      const response = await REST.validateBoard(grid);
+      const data = await response.json();
+      return data.status;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleInterface(action) {
+    let newGrid;
+    switch (action) {
+      case "create":
+        newGrid = await handleCreate();
+        setPuzzleStatus("");
+        setGrid(newGrid);
+        break;
+      case "solve":
+        newGrid = await handleSolve();
+        setGrid(newGrid);
+        break;
+      case "validate":
+        const status = await handleValidate();
+        const puzzleStatus = status ? "Solved" : "Unsolved";
+        setPuzzleStatus(puzzleStatus);
+        break;
+      //   case "clear":
+      //     setGrid(getGrid());
+      //     setPuzzleStatus("");
+      //     break;
+      default:
+        throw new Error("Invalid action");
     }
   }
 
