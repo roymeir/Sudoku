@@ -1,14 +1,4 @@
-let board = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+import { Util } from "./Util.js";
 
 function solve(grid) {
   for (let row = 0; row < grid.length; row++) {
@@ -62,5 +52,40 @@ function findInSubGrid(grid, row, col, guess) {
   return true;
 }
 
-solve(board);
-console.log(board);
+function createGrid(difficulty) {
+  let howManyNumbersToRemove = setDifficulty(difficulty);
+  let grid = [];
+  for (let i = 0; i < 9; i++) {
+    grid[i] = Array(9).fill(0);
+  }
+  solve(grid);
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (Math.random() > howManyNumbersToRemove) {
+        grid[i][j] = 0;
+      }
+    }
+  }
+  return grid;
+}
+
+function setDifficulty(difficulty) {
+  switch (difficulty) {
+    case "Easy":
+      return 0.6;
+    case "Medium":
+      return 0.45;
+    case "Hard":
+      return 0.3;
+    case "Expert":
+      return 0.15;
+    default:
+      throw new Error("Invalid difficulty");
+  }
+}
+
+let solution = createGrid("Hard");
+console.log(solution);
+// Util.copyGrid(board, solution);
+solve(solution);
+console.log(solution);
